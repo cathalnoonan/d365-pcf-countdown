@@ -1,0 +1,25 @@
+{
+  "name": "d365-pcf-countdown",
+  "version": "0.1.0",
+  "description": "D365 PCF control that uses the countdown npm package.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cathalnoonan/d365-pcf-countdown.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "pcf-scripts build",
+    "clean": "pcf-scripts clean",
+    "rebuild": "pcf-scripts rebuild",
+    "start": "pcf-scripts start"
+  },
+  "dependencies": {
+    "countdown": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/countdown": "0.0.7",
+    "@types/powerapps-component-framework": "^1.2.3",
+    "pcf-scripts": "^1.4.4",
+    "pcf-start": "^1.4.4"
+  }
+}
