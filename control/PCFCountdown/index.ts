@@ -8,7 +8,6 @@ export function PCFCountdown(): ComponentFramework.StandardControl<IInputs, IOut
     let _interval: number | null;
 
     function start(): void {
-        debugger
         _interval = window.setInterval(loop, 1000); // Every second
     }
 
