@@ -8,22 +8,30 @@
   <Import Project="$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.props" Condition="Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.props')" />
 
   <PropertyGroup>
+    <Name>cn_pcfcountdown</Name>
     <ProjectGuid>13e1de08-c9d0-4e89-8208-e49350f33704</ProjectGuid>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <!--Remove TargetFramework when this is available in 16.1-->
     <TargetFramework>net462</TargetFramework>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <SolutionRootPath>src</SolutionRootPath>
   </PropertyGroup>
-
-  <!-- Solution Packager overrides, un-comment to use: SolutionPackagerType (Managed, Unmanaged, Both)
+  
+  <!-- Solution Packager overrides -->
   <PropertyGroup>
+    <SolutionRootPath>src</SolutionRootPath>
     <SolutionPackageType>Managed</SolutionPackageType>
+
+    <!-- 
+      Set the output to the 'dist' folder.
+      Use this method rather than setting the working folder, so that only the zip file(s) is/are put in that folder.
+      This will be amended using 'directory.build.targets' to append the version number and "_managed".
+    -->
+    <SolutionPackageZipFilePath>..\dist\$(Name).zip</SolutionPackageZipFilePath>
   </PropertyGroup>
-  -->
   
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerApps.MSBuild.Solution" Version="1.*" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   
   <ItemGroup>
@@ -43,7 +51,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\control\d365-pcf-countdown.pcfproj" />
+    <ProjectReference Include="..\control\control.pcfproj" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

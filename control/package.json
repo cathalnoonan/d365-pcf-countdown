@@ -17,9 +17,10 @@
     "countdown": "^2.6.0"
   },
   "devDependencies": {
-    "@types/countdown": "0.0.7",
-    "@types/powerapps-component-framework": "^1.2.3",
-    "pcf-scripts": "^1.5.5",
-    "pcf-start": "^1.5.5"
+    "@types/countdown": "^0.0.8",
+    "@types/powerapps-component-framework": "^1.3.3",
+    "pcf-scripts": "^1.10.4",
+    "pcf-start": "^1.10.4",
+    "typescript": "^4.5.4"
   }
 }
