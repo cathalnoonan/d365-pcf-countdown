@@ -1,37 +1,71 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- 
-    MSBuild target to find the version number from ./solution/src/Other/Solution.xml.
-    We will use this in the zip name of the solution(s) being built.
-  -->
-  <Target Name="IncludeVersionNumberInSolutionZipName" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <!-- Find the solution file relative to the '.cdsproj' file. -->
-      <_SolutionXmlFilePath>$(MSBuildProjectDirectory)\$(SolutionRootPath)\Other\Solution.xml</_SolutionXmlFilePath>
-      <_SolutionVersionXPath>/ImportExportXml/SolutionManifest/Version/text()</_SolutionVersionXPath>
-    </PropertyGroup>
-    <XmlPeek XmlInputPath="$(_SolutionXmlFilePath)" Query="$(_SolutionVersionXPath)">
-      <Output TaskParameter="Result" ItemName="_TempSolutionVersionNumber" />
-    </XmlPeek>
-    <PropertyGroup>
-      <_SolutionVersionNumber>@(_TempSolutionVersionNumber)</_SolutionVersionNumber>
-      <_SolutionVersionNumberFormatted>$([System.Text.RegularExpressions.Regex]::Replace($(_SolutionVersionNumber),"\.", "_"))</_SolutionVersionNumberFormatted>
-      
-      <!-- Append the version number to the output solution name. -->
-      <SolutionPackageZipFilePath>$(SolutionPackageZipFilePath.Replace(".zip","_$(_SolutionVersionNumberFormatted).zip"))</SolutionPackageZipFilePath>
-    </PropertyGroup>
-  </Target>
-
   <!--
-    Build process will not include "_managed" in the solution zip file if only the managed solution is built.
-    We will include "_managed" in the solution zip name.
+    MSBuild target to set the solution name.
+
+    The aim of the task is to set the 'SolutionPackageZipFilePath' propery.
+    - Unmanaged: {UniqueName}_{Version}.zip
+    - Managed:   {UniqueName}_{Version}_managed.zip
+
+    Note: 
+    - All properties named with the "temp_" prefix are only used within this file.
   -->
-  <Target Name="IncludeManagedInSolutionZipName" AfterTargets="IncludeVersionNumberInSolutionZipName" 
-          Condition=" '$(SolutionPackageType)' == 'Managed' ">
+  <Target Name="SetSolutionZipName" BeforeTargets="PrepareForBuild">
+
+    <!-- 
+      Static Variables assigned in the PropertyGroup
+    -->
     <PropertyGroup>
-      <!-- Append "_managed" to the output solution name. -->
-      <SolutionPackageZipFilePath>$(SolutionPackageZipFilePath.Replace(".zip","_managed.zip"))</SolutionPackageZipFilePath>
+      <!-- Output folder: ../dist -->
+      <temp_OutputFolder>$(MSBuildProjectDirectory)\..\dist</temp_OutputFolder>
+
+      <!-- Solution.xml file path -->
+      <temp_SolutionXmlFilePath>$(MSBuildProjectDirectory)\$(SolutionRootPath)\Other\Solution.xml</temp_SolutionXmlFilePath>
+
+      <!-- 
+        XPaths needed for XmlPeek tasks.
+        - temp_SolutionUniqueNameXPath: Path to "uniquename"
+        - temp_SolutionVersionXPath: Path to "version"
+      -->
+      <temp_SolutionUniqueNameXPath>/ImportExportXml/SolutionManifest/UniqueName/text()</temp_SolutionUniqueNameXPath>
+      <temp_SolutionVersionXPath>/ImportExportXml/SolutionManifest/Version/text()</temp_SolutionVersionXPath>
     </PropertyGroup>
+    
+
+    <!-- Get solution unique name -->
+    <XmlPeek XmlInputPath="$(temp_SolutionXmlFilePath)" Query="$(temp_SolutionUniqueNameXPath)">
+      <Output TaskParameter="Result" ItemName="temp_SolutionUniqueName" />
+    </XmlPeek>
+
+    <!-- Get solution version -->
+    <XmlPeek XmlInputPath="$(temp_SolutionXmlFilePath)" Query="$(temp_SolutionVersionXPath)">
+      <Output TaskParameter="Result" ItemName="temp_TempSolutionVersionNumber" />
+    </XmlPeek>
+
+
+    <!--
+      Use the above variables and tasks to generate solution output path.
+    -->
+    <PropertyGroup>
+      <!-- Version Number: X_X_X_X (major_minor_build_revision) -->
+      <temp_SolutionVersionNumber>@(temp_TempSolutionVersionNumber)</temp_SolutionVersionNumber>
+      <temp_SolutionVersionNumberFormatted>$([System.Text.RegularExpressions.Regex]::Replace($(temp_SolutionVersionNumber),"\.", "_"))</temp_SolutionVersionNumberFormatted>
+
+      <!-- Managed suffix?: (not assigned for Unmanaged solution) -->
+      <temp_SolutionManagedSuffix Condition=" '$(SolutionPackageType)' != 'Managed' "></temp_SolutionManagedSuffix>
+      <temp_SolutionManagedSuffix Condition=" '$(SolutionPackageType)' == 'Managed' ">_managed</temp_SolutionManagedSuffix>
+
+      <!-- 
+        Combine the parts to make the solution name format
+        - Unmanaged: {UniqueName}_{Version}.zip
+        - Managed:   {UniqueName}_{Version}_managed.zip
+      -->
+      <temp_SolutionUniqueName>@(temp_SolutionUniqueName)_$(temp_SolutionVersionNumberFormatted)$(temp_SolutionManagedSuffix)</temp_SolutionUniqueName>
+      
+      <!-- Assign SolutionPackageZipFilePath: Consumed by the dotnet build -->
+      <SolutionPackageZipFilePath>$(temp_OutputFolder)\$(temp_SolutionUniqueName).zip</SolutionPackageZipFilePath>
+    </PropertyGroup>
+    
   </Target>
 
 </Project>
