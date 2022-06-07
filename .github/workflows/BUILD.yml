@@ -15,7 +15,7 @@ jobs:
         # Specify the operating system(s) that the build will run on
         os: 
         - ubuntu-latest
-        # - windows-latest
+        - windows-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -29,6 +29,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: control/package-lock.json
       - name: Setup dotnet
         uses: actions/setup-dotnet@v2
         with:
