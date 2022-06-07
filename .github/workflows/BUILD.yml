@@ -15,7 +15,7 @@ jobs:
         # Specify the operating system(s) that the build will run on
         os: 
         - ubuntu-latest
-        - windows-latest
+        #- windows-latest
 
     runs-on: ${{ matrix.os }}
 
