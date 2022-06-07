@@ -15,7 +15,7 @@ jobs:
         # Specify the operating system(s) that the build will run on
         os: 
         - ubuntu-latest
-        - windows-latest
+        # - windows-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -42,6 +42,7 @@ jobs:
         working-directory: ./control
 
       # Build solution
+      # - https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-environment-variables
       - run: dotnet build -c Release
         working-directory: ./solution
         env:
