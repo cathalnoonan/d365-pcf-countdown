@@ -37,7 +37,7 @@ jobs:
       # Prepare artifacts(s) [WIP]
       - name: Get solution name
         id: get-solution-name
-        run: echo "::set-output name=SOLUTION_NAME::$(basename $(find ./dist -type f -iname "*"))
+        run: echo "::set-output name=SOLUTION_NAME::$(basename $(find ./dist -type f -iname "*"))"
       - name: Print out SOLUTION_NAME variable
         run: echo "SOLUTION_NAME = $SOLUTION_NAME"
       # - name: Upload artifact
