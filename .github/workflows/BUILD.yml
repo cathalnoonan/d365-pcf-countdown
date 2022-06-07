@@ -39,7 +39,7 @@ jobs:
         id: get-solution-name
         run: echo "::set-output name=SOLUTION_NAME::$(basename $(find ./dist -type f -iname "*"))"
       - name: Print out SOLUTION_NAME variable
-        run: echo "SOLUTION_NAME = $SOLUTION_NAME"
+        run: echo "SOLUTION_NAME = ${{ github.event.repository.name }}"
       # - name: Upload artifact
       #   uses: actions/upload-artifact@v3
       #   with:
