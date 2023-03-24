@@ -1,5 +1,5 @@
 import { IInputs, IOutputs } from './generated/ManifestTypes'
-import * as countdown from 'countdown'
+import countdown from 'countdown'
 
 export class PCFCountdown implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
